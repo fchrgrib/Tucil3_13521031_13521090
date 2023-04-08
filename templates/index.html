@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Maps Example</title>
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+    }
+  </style>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDQJmZwmhm1cKSMQ08x_vcSZdhdNmB3dWI"></script>
+  <script>
+    var markers = [];
+    var clickedMarkers = [];
+    var lines = [];
+
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 10,
+            center: {lat: 37.7749, lng: -122.4194},
+            disableDoubleClickZoom: true, // disables zooming on double-click
+            clickableIcons: false
+        });
+
+        map.addListener("dblclick", (e) => {
+            var marker = new google.maps.Marker({
+                position: e.latLng,
+                map: map,
+            });
+
+            marker.addListener('click', function() {
+                addClickedMarker(marker);
+            });
+
+            markers.push(marker);
+        });
+        
+
+    function addClickedMarker(marker) {
+        if(clickedMarkers.length > 0){
+            if(clickedMarkers[0] != marker){
+                clickedMarkers.push(marker);
+            }
+        } else {
+            clickedMarkers.push(marker);
+        }
+        if (clickedMarkers.length > 1) {
+            var lastMarker = clickedMarkers[clickedMarkers.length - 2];
+            var checker = lineExists(marker, lastMarker);
+            if(checker == -1){
+                var line = new google.maps.Polyline({
+                    path: [lastMarker.getPosition(), marker.getPosition()],
+                    map: map
+                });
+
+                lines.push(line);
+            }  else {
+                // Remove the line from the map
+                lines[checker].setMap(null);
+                // Remove the line from the lines array
+                lines.splice(checker, 1);
+            }
+
+            clickedMarkers = [];
+        }
+    }
+
+    function lineExists(marker1, marker2) {
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i];
+            if (
+                (line.getPath().getAt(0).equals(marker1.getPosition()) &&
+                line.getPath().getAt(1).equals(marker2.getPosition())) ||
+                (line.getPath().getAt(1).equals(marker1.getPosition()) &&
+                line.getPath().getAt(0).equals(marker2.getPosition()))
+            ) {
+                return i;
+            }
+        }
+            return -1;
+        }
+
+    }
+  </script>
+</head>
+<body onload="initMap()">
+  <div id="map"></div>
+</body>
+</html>
