@@ -8,12 +8,10 @@ def csu(arr, origin, destination):
         rute.append(destination)
         return rute
     else:
-
-        count = 0
         temp_arr = [origin]
         prioqueue = PriorityQueue()
-        prioqueue.put((abs(arr[origin][destination]), count, temp_arr))
-        count += 1
+        prioqueue.put((abs(arr[origin][destination]), 0, temp_arr))
+        count = 1
         temp = prioqueue.get()
 
         while arr[temp[2][len(temp[2]) - 1]][destination] != 0:
