@@ -11,7 +11,7 @@ def csu(arr, origin, destination):
     else:
         temp_arr = [origin]
         prioqueue = PriorityQueue()
-        prioqueue.put((abs(arr[origin][destination]), 0, temp_arr))
+        prioqueue.put((0, 0, temp_arr))
         count = 1
         temp = prioqueue.get()
 
