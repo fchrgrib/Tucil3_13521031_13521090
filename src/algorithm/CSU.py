@@ -1,5 +1,6 @@
 from queue import PriorityQueue
 
+
 # masukkan arr sebagai matriks ketetanggaan origin sebagai index awal dan destination sebagai index tujuan
 def csu(arr, origin, destination):
     rute = [origin]
@@ -24,11 +25,11 @@ def csu(arr, origin, destination):
                     prioqueue.put((abs(arr[i][destination]), count, temp_push.copy()))
                     count += 1
                     temp_push.clear()
-
+            if prioqueue.empty():
+                break
             temp = prioqueue.get()
 
         rute = temp[2]
         if prioqueue.empty() and rute[len(rute - 1)] != destination:
             return []
     return rute
-

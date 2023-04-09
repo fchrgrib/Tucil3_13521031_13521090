@@ -28,7 +28,8 @@ def a_star(arr, origin, destination):
                     prioqueue.put((abs(arr[i][destination]) + temp_value, count, temp_push.copy()))
                     count += 1
                     temp_push.clear()
-
+            if prioqueue.empty(): 
+                break
             temp = prioqueue.get()
 
         rute = temp[2]
