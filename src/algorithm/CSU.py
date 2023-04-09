@@ -23,8 +23,9 @@ def csu(arr, origin, destination):
                     temp_push.append(i)
 
                     temp_value = 0
+
                     for j in range(len(temp_push) - 1):
-                        temp_value += arr[j][j + 1]
+                        temp_value += arr[temp_push[j]][temp_push[j+1]]
 
                     prioqueue.put((temp_value, count, temp_push.copy()))
                     count += 1
@@ -37,3 +38,4 @@ def csu(arr, origin, destination):
         if prioqueue.empty() and rute[len(rute - 1)] != destination:
             return []
     return rute
+
