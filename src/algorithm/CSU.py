@@ -5,7 +5,7 @@ from queue import PriorityQueue
 def csu(arr, origin, destination):
     rute = [origin]
 
-    if arr[destination] > 0:
+    if arr[origin][destination] > 0:
         rute.append(destination)
         return rute
     else:
