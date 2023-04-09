@@ -31,7 +31,7 @@ def csu(arr, origin, destination):
         return rute
     else:
         i = origin
-        distance_start_point = 0
+
         while not has_destination(arr[i], destination):
             idx = minimum_edge(arr[i], arr, destination)
             i = idx
