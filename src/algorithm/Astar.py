@@ -32,6 +32,8 @@ def a_star(arr, origin, destination):
             temp = prioqueue.get()
 
         rute = temp[2]
+        if prioqueue.empty() and rute[len(rute-1)] != destination:
+            return []
     return rute
 
 
