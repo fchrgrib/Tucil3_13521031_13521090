@@ -1,5 +1,7 @@
 import os
 
+
+#file reader otomatis membaca txt di folder test di file graph.txt
 def file_reader():
     matrix = []
     coordinate = []
