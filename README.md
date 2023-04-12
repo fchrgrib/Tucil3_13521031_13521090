@@ -17,9 +17,10 @@
 1. Change Directory ke `../Tucil_13521031_13521090/src`
 2. jalankan perintah `python3 -m venv venv`
 3. jalankan perintah `venv\Scripts\activate`
-4. jalankan perintah `python app.py` pada venv yang telah dijalankan pada perintah sebelumnya
-5. ctrl+click link yang tertera pada terminal atau buka `http://127.0.0.1:5000` pada web browser
-6. jika ingin mengubah port yang digunakan pergi ke `src/app.py` kemudian tambahkan `port=[port]` pada app.run(), lalu ubah API key pada `src/templates/index.html` menjadi API key yang dapat memberi akses pada port tersebut, kemudian lakukan tahap sebelumnya.
+4. jalankan perintah `pip install flask`
+5. jalankan perintah `python app.py` pada venv yang telah dijalankan pada perintah sebelumnya
+6. ctrl+click link yang tertera pada terminal atau buka `http://127.0.0.1:5000` pada web browser
+7. jika ingin mengubah port yang digunakan pergi ke `src/app.py` kemudian tambahkan `port=[port]` pada app.run(), lalu ubah API key pada `src/templates/index.html` menjadi API key yang dapat memberi akses pada port tersebut, kemudian lakukan tahap sebelumnya.
 
 ## Cara Menggunakan
 1. Ketik lokasi pada searchbar diatas map, lalu tekan 'Go'
