@@ -3,7 +3,7 @@ import os
 
 #file reader otomatis membaca txt di folder test di file graph.txt
 def file_reader():
-    with open(os.path.abspath("../test/graph.txt"), 'r') as f:
+    with open(os.path.abspath("../../test/graph.txt"), 'r') as f:
         test = f.read()
     split_new_line = test.split("\n")
 
