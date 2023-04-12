@@ -1,19 +1,19 @@
 # Tucil3_13521031_13521090
 > Tugas Kecil Strategi Algoritma ke-3 adalah praktek implementasi algoritma UCS dan A* pada pencarian jalan terdekat dalam suatu graf.
 
-## struktur folder
+## Struktur Folder
 - `src` berisi sourcecode program.
 - `test` berisi input testing untuk program.
 - `doc` berisi laporan dengan format pdf.
 
-## program environment
+## Program Environment
 - Visual Studio Code
 - Python 3.10.11
 - Flask beserta dependencies-nya
 - Google Chrome Web Browser
 - JS Google Map API (https://maps.googleapis.com/maps/api/js)
 
-## Cara Men-setup Enviroment dan Menjalankan Program
+## Cara Setup Enviroment dan Menjalankan Program
 1. Change Directory ke `../Tucil_13521031_13521090/src`
 2. jalankan perintah `python3 -m venv venv`
 3. jalankan perintah `venv\Scripts\activate`
@@ -34,6 +34,6 @@
 8. jika ingin melakukan pencarian terhadap data yang telah ada, anda dapat memasukkan file.txt dengan format pada tautan yang tertera pada program dengan cara 'drag and drop' pada kotak yang telah tersedia
 9. pastikan untuk mencentang checkbox 'File input calculation' bila menggunakan file
 
-## identitas pembuat
+## Identitas Pembuat
 naninani - 13521031 - K3
 Tobias Natalio Sianipar - 13521090 - K2
