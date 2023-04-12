@@ -36,5 +36,5 @@
 9. pastikan untuk mencentang checkbox 'File input calculation' bila menggunakan file
 
 ## Identitas Pembuat
-naninani - 13521031 - K3
+Fahrian Afdholi - 13521031 - K3
 Tobias Natalio Sianipar - 13521090 - K2
