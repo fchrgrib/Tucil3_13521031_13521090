@@ -21,6 +21,7 @@
 5. jalankan perintah `python app.py` pada venv yang telah dijalankan pada perintah sebelumnya
 6. ctrl+click link yang tertera pada terminal atau buka `http://127.0.0.1:5000` pada web browser
 7. jika ingin mengubah port yang digunakan pergi ke `src/app.py` kemudian tambahkan `port=[port]` pada `app.run()`, lalu ubah API key pada `src/templates/index.html` menjadi API key yang dapat memberi akses pada port tersebut, kemudian lakukan tahap sebelumnya.
+8. jangan lupa menambahkan `&libraries=geometry` pada akhir inisiasi API.
 
 ## Cara Menggunakan
 1. Ketik lokasi pada searchbar diatas map, lalu tekan 'Go'
