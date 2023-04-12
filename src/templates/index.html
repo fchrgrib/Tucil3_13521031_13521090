@@ -38,22 +38,32 @@
         background-color: #96b9f2;
     }
 
+    #drag-and-drop {
+			border: 2px dashed #ccc;
+			padding: 20px;
+			text-align: center;
+			font-size: 18px;
+		}
+
   </style>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDQJmZwmhm1cKSMQ08x_vcSZdhdNmB3dWI"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDQJmZwmhm1cKSMQ08x_vcSZdhdNmB3dWI&libraries=geometry"></script>
   <script>
+    var fileAdjMatrix;
     var markers = [];
     var clickedMarkers = [];
     var lines = [];
+    var map;
+    var infoWindow;
 
     function initMap() {
-        var infoWindow = new google.maps.InfoWindow();
-        var map = new google.maps.Map(document.getElementById('map'), {
+        map = new google.maps.Map(document.getElementById('map'), {
             zoom: 18,
             center: {lat:  -6.89044875, lng: 107.6103135},
             disableDoubleClickZoom: true, // disables zooming on double-click
             clickableIcons: false
         });
-
+        infoWindow = new google.maps.InfoWindow();
+        
         const searchInput = document.getElementById("search-input");
         const searchButton = document.getElementById("search-button");
         
@@ -113,7 +123,6 @@
 
             markers.push(marker);
         });
-        
 
         function addClickedMarker(marker) {
             if(clickedMarkers.length > 0){
@@ -133,12 +142,11 @@
                         map: map
                     });
 
+                    line.distance = google.maps.geometry.spherical.computeLength(line.getPath());
+
                     line.addListener('mouseover', function(event) {
 
-                        // Calculate the length of the line
-                        var length = google.maps.geometry.spherical.computeLength(line.getPath());
-
-                        infoWindow.setContent('Length: ' + length.toFixed(2) + ' meters');
+                        infoWindow.setContent('Length: ' + line.distance + ' meters');
 
                         // Position the info window at the mouse pointer and open it
                         infoWindow.setPosition(event.latLng);
@@ -162,6 +170,83 @@
         }
 
     }
+
+    function addMarker(latLng){
+        var marker = new google.maps.Marker({
+            position: latLng,
+            map: map,
+            id: markers.length
+        });
+
+        marker.setIcon("http://maps.google.com/mapfiles/ms/icons/green-dot.png");
+
+        marker.addListener('click', function() {
+            addClickedMarker(marker);
+        });
+
+        // add a double-click listener to the marker to delete marker
+        marker.addListener('rightclick', function() {
+            deleteLineWithMarker(marker);
+            marker.setMap(null);  // remove the marker from the map
+            // Remove the marker from the array
+            var index = markers.indexOf(marker);
+            if (index > -1) {
+                markers.splice(index, 1);
+            }
+            // Remove the marker from the clickedArray
+            var index = clickedMarkers.indexOf(marker);
+            if (index > -1) {
+                clickedMarkers.splice(index, 1);
+            }
+
+            resetMarkerId();
+        });
+
+        // Add a listener for the mouseover event to check id
+        marker.addListener("mouseover", function() {
+            // Set the content of the info window
+            infoWindow.setContent('Marker ID: ' + marker.id);
+            // Open the info window on the map
+            infoWindow.open(map, marker);
+        });
+
+        // Add a listener for the mouseout event
+        marker.addListener("mouseout", function() {
+            infoWindow.close();
+        });
+
+        markers.push(marker);
+    }
+
+    function addLine(marker1, marker2, distance) {
+        var lastMarker = clickedMarkers[clickedMarkers.length - 2];
+        var checker = lineExists(marker1, marker2);
+        var line = new google.maps.Polyline({
+            path: [marker1.getPosition(), marker2.getPosition()],
+            strokeColor: '#000000',
+            map: map
+        });
+
+        line.distance = distance;
+
+        line.addListener('mouseover', function(event) {
+
+            // Calculate the length of the line
+            var length = google.maps.geometry.spherical.computeLength(line.getPath());
+
+            infoWindow.setContent('Length: ' + line.distance + ' meters');
+
+            // Position the info window at the mouse pointer and open it
+            infoWindow.setPosition(event.latLng);
+            infoWindow.open(map);
+        });
+
+        line.addListener('mouseout', function() {
+            infoWindow.close();
+        });
+
+        lines.push(line);
+    } 
 
     function clearMap() {
         // Remove all markers from map and reset markers array
@@ -263,16 +348,28 @@
 
     function showPath(data) {
         // process the integer array as needed
+        distance = 0;
         if(data.length > 1){
             for(let i = 0; i < data.length - 1; i++) {
                 changeLineColor(markers[data[i]], markers[data[i+1]]);
+                idx = lineExists(markers[data[i]], markers[data[i+1]]);
+                distance += lines[idx].distance;
             }
-        }       
+        }    
+        
+        const dist = document.getElementById('distance');
+        dist.textContent = "shortest distance traveled : " + distance + " m.";
+           
     }
 
     function clearInput() {
         document.getElementById("destination").value = "";
         document.getElementById("origin").value = "";
+    }
+
+    function findEuclid(point1, point2){
+        const distance = Math.sqrt(Math.pow(point1[0] - point2[0], 2) + Math.pow(point1[1] - point2[1], 2));
+        return distance;
     }
 
     function calculate(){
@@ -287,9 +384,15 @@
         // If the textbox is empty
             alert("Please fill in the origin textbox.");
         } else {
+            const fromFile = document.getElementById('file-input-calculation');
         // If the textbox is not empty
+            var adjacencyMatrix;
             resetLineColor();
-            var adjacencyMatrix = getAdjacencyMatrix();
+            if(fromFile.checked && fileAdjMatrix){
+                adjacencyMatrix = fileAdjMatrix;
+            } else {
+                adjacencyMatrix = getAdjacencyMatrix();
+            }
 
             fetch('/calculate', {
                 method: 'POST',
@@ -338,11 +441,20 @@
                 A*
             </label>
         </div>
+        <div class="search-container" id="options">
+            <label>
+                <input type="checkbox" id="file-input-calculation" name="file-input-calculation">
+                File input calculation
+            </label>
+        </div>
         <div class="search-container" id="find-path">
             <button onclick="calculate()">Find Path</button>
         </div>
         <div class="search-container" id="find-path">
             <label id="runtime"></label>
+        </div>
+        <div class="search-container" id="find-path">
+            <label id="distance"></label>
         </div>
     </div>
 
@@ -369,9 +481,109 @@
                 </li>
                 <li>Pilih UCS atau A* sebagai algoritma pencarian</li>
                 <li>tekan 'Find Path' untuk mencari jalan terdekat</li>
+                <li>jika ingin melakukan pencarian terhadap data yang telah ada, anda dapat memasukkan 
+                    file.txt dengan format pada tautan berikut
+                </li>
+                <a href="{{ url_for('text_format') }}">format.txt</a>
+                <li>pastikan untuk mencentang checkbox 'File input calculation'
+                     bila menggunakan file
+                </li>
+
+
+
             </ul>
         </div>
+        <div id="drag-and-drop">
+            Drag and drop a text file here
+        </div>
     </div>
+
+    <script>
+		const dragAndDrop = document.getElementById('drag-and-drop');
+
+		// Prevent default drag behaviors
+		['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+			dragAndDrop.addEventListener(eventName, e => {
+				e.preventDefault();
+				e.stopPropagation();
+			}, false);
+		});
+
+		// Highlight drop area when item is dragged over it
+		['dragenter', 'dragover'].forEach(eventName => {
+			dragAndDrop.addEventListener(eventName, () => {
+				dragAndDrop.style.backgroundColor = '#f5f5f5';
+			}, false);
+		});
+
+		// Remove highlight when item is dragged out of the drop area
+		['dragleave', 'drop'].forEach(eventName => {
+			dragAndDrop.addEventListener(eventName, () => {
+				dragAndDrop.style.backgroundColor = 'white';
+			}, false);
+		});
+
+		// Handle dropped items
+		dragAndDrop.addEventListener('drop', e => {
+			const file = e.dataTransfer.files[0];
+
+			if (file.type === 'text/plain') {
+				const reader = new FileReader();
+
+				reader.onload = () => {
+                // Make AJAX request to Flask app with the file content
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '/process_file');
+                xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+                xhr.onload = () => {
+                // Handle response from Flask app
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        const coordinates = response.result;
+                        const adjacencyMatrix = response.result2;
+                        console.log(coordinates);
+                        console.log(adjacencyMatrix);
+
+                        clearMap();
+
+                        map.setCenter({lat:  -58.587725, lng: -6.125348});
+                        map.setZoom(5);
+
+                        for(let i = 0; i < coordinates.length; i++){
+                            addMarker({lat:  -58.587725 + coordinates[i][0],
+                                 lng: -6.125348 + coordinates[i][1]})
+                        }
+
+                        for(let i = 0; i < adjacencyMatrix.length; i++){
+                            for(let j = i + 1; j < adjacencyMatrix[0].length; j++){
+                                if(adjacencyMatrix[i][j] <= 0){
+                                    adjacencyMatrix[i][j] = -1 * findEuclid(coordinates[i],coordinates[j]);
+                                    adjacencyMatrix[j][i] = adjacencyMatrix[i][j];
+                                } else {
+                                    addLine(markers[i], markers[j], adjacencyMatrix[i][j]);
+                                }
+                            }
+                        }
+
+                        console.log(adjacencyMatrix)
+
+                        fileAdjMatrix = adjacencyMatrix;
+
+
+
+                    } else {
+                        console.log('Error:', xhr.statusText);
+                    }
+                };
+                xhr.send(JSON.stringify({content: reader.result}));
+            };
+
+				reader.readAsText(file);
+			} else {
+				console.log('Invalid file type. Please drop a text file.');
+			}
+		});
+	</script>
 
 </body>
 </html>
