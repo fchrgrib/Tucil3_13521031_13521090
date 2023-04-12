@@ -1,7 +1,7 @@
 import os
 
 
-#file reader otomatis membaca txt di folder test di file graph.txt
+#file reader membaca file dari test
 def file_reader(test):
     split_new_line = test.split("\n")
 
