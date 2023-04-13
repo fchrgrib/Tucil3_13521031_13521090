@@ -32,7 +32,7 @@
 5. Hover pada simpul untuk melihat ID simpul dan masukkan pada origin dan destination untuk memulai pencarian
 6. Pilih UCS atau A* sebagai algoritma pencarian
 7. tekan 'Find Path' untuk mencari jalan terdekat
-8. jika ingin melakukan pencarian terhadap data yang telah ada, anda dapat memasukkan file.txt dengan format pada tautan yang tertera pada program dengan cara 'drag and drop' pada kotak yang telah tersedia
+8. jika ingin melakukan pencarian terhadap data yang telah ada, anda dapat memasukkan file.txt dengan format pada tautan yang tertera pada program dengan cara 'drag and drop' pada kotak yang telah tersedia (pastikan koordinat yang diinput bernilai positif)
 9. pastikan untuk mencentang checkbox 'File input calculation' bila menggunakan file
 
 ## Identitas Pembuat
